@@ -1,0 +1,31 @@
+```
+alias: Front Door Person Notification
+description: Notify all devices when a person is detected at the front door.
+triggers:
+  - topic: frigate/events
+    trigger: mqtt
+conditions:
+  - condition: template
+    value_template: |
+      {{ trigger.payload_json.type == 'new'
+         and trigger.payload_json.after.camera == 'front_Door'
+         and trigger.payload_json.after.label == 'person'
+         and 'front-door-primary' in trigger.payload_json.after.zones}}
+actions:
+  - data:
+      message: Person detected at the front door!
+      data:
+        image: "{{ thumbnail_url }}"
+        clickAction: "{{ clip_url }}"
+    action: notify.notify
+variables:
+  notification_id: "{{ trigger.payload_json.after.id }}"
+  thumbnail_url: >-
+    http://hass.astria-porta.com/api/frigate/notifications/{{ notification_id
+    }}/thumbnail.jpg?token=**************************************
+  clip_url: >-
+    http://hass.astria-porta.com/api/frigate/notifications/{{ notification_id
+    }}/clip.mp4?token=************************************************
+mode: single
+
+```

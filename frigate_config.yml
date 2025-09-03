@@ -1,0 +1,207 @@
+####################################################
+### Frigate Camera Config File                    ##
+### Created: 04/23/2025                           ##
+### Last Updated: 05/07/2025                      ##
+### Latest Updates:                               ##
+###### Updated mqtt IP addr. for proxmox HA       ##
+###### Major change due to new WAP and pfsense    ##
+###### Re-added cameras due to pfsense IPs        ##
+###### Changed from hostnames to IPs for cams     ##
+###### Updated usernames & PWs for reset cams     ##
+####################################################
+mqtt:
+  enabled: true
+  port: 1883
+  host: 192.168.1.20
+  user: mqtt-user
+  password: mike-quebec-tango
+  topic_prefix: frigate
+  client_id: frigate
+detectors:
+  coral1:
+    type: edgetpu
+    device: pci:0
+  snapshots:
+    enabled: true
+    retain:
+      default: 30
+ffmpeg:
+  output_args:
+    record: preset-record-generic-audio-aac
+################################### CAMERAS ###################################
+cameras:
+################### FRONT DOOR ##########################
+  front_Door:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://admin:*******@192.168.1.210:554
+          roles:
+            - detect
+    record:
+      enabled: true
+      retain:
+        days: 30
+        mode: motion
+      alerts:
+        retain:
+          days: 30
+      detections:
+        retain:
+          days: 30
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 10
+    zones:
+      FrontDoor-Primary:
+        coordinates: 
+          0.003,0.991,0.017,0.504,0.19,0.954,0.505,0.737,0.344,0.588,0.406,0.458,0.415,0,0.63,0,0.856,0,0.889,0.218,0.881,0.38,0.999,0.458,1,1,0.185,1
+        loitering_time: 0
+        inertia: 3
+      FrontDoor-Secondary:
+        coordinates: 
+          0.032,0.17,0.023,0.489,0.102,0.704,0.329,0.598,0.4,0.456,0.281,0.499,0.273,0.4,0.266,0.274,0.269,0.194
+        loitering_time: 0
+        inertia: 3
+    review:
+      alerts:
+        required_zones:
+          - FrontDoor-Primary
+          - FrontDoor-Secondary
+  #################### UPSTAIRS ######################
+  upstairs:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://Qv49lsG8X4bnwiAn:*******@192.168.1.212:554/live0
+          roles:
+            - detect
+    record:
+      enabled: true
+      retain:
+        days: 15
+        mode: motion
+      alerts:
+        retain:
+          days: 15
+      detections:
+        retain:
+          days: 15
+    detect:
+      enabled: false
+      width: 1280
+      height: 720
+      fps: 10
+##################### KITCHEN #####################
+  kitchen:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://kitchen_camera:*******@192.168.1.215:554/stream1
+          roles:
+            - detect
+    record:
+      enabled: true
+      retain:
+        days: 15
+        mode: motion
+      alerts:
+        retain:
+          days: 15
+      detections:
+        retain:
+          days: 15
+    detect:
+      enabled: false
+      width: 1280
+      height: 720
+      fps: 10
+##################### LIVINGROOM #####################
+  livingroom:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://livingroom_camera:*******@192.168.1.214:554/stream1
+          roles:
+            - detect
+    record:
+      enabled: true
+      retain:
+        days: 15
+        mode: motion
+      alerts:
+        retain:
+          days: 15
+      detections:
+        retain:
+          days: 15
+    detect:
+      enabled: false
+      width: 1280
+      height: 720
+      fps: 10
+##################### LIVING ROOM MANTLE #####################
+  livingroom_mantle:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://Dp5lwNzPzWAOpoTl:*******@192.168.1.211:554/live0
+          roles:
+            - detect
+    record:
+      enabled: true
+      retain:
+        days: 15
+        mode: motion
+      alerts:
+        retain:
+          days: 15
+      detections:
+        retain:
+          days: 15
+    detect:
+      enabled: false
+      width: 1280
+      height: 720
+      fps: 10
+##################### Lava Lounge #####################
+  lava_lounge:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://Gd6pfT5LN0uCdArj:*******@192.168.1.213:554/live0
+          roles:
+            - detect
+    record:
+      enabled: true
+      retain:
+        days: 15
+        mode: motion
+      alerts:
+        retain:
+          days: 15
+      detections:
+        retain:
+          days: 15
+    detect:
+      enabled: false
+      width: 1280
+      height: 720
+      fps: 10
+########## MISC SETTINGS ############
+version: 0.15-1
+semantic_search:
+  enabled: true
+  reindex: false
+  model_size: large
+camera_groups:
+  Inside:
+    order: 1
+    icon: LuDog
+    cameras:
+      - upstairs
+      - livingroom_mantle
+      - lava_lounge
+      - livingroom

@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  frigate:
+    container_name: frigate
+    restart: always
+    image: ghcr.io/blakeblackshear/frigate:stable
+    privileged: true
+    shm_size: "256mb"
+    devices:
+      - /dev/apex_0:/dev/apex_0
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /mnt/storage/config/frigate/frigate.yml:/config/config.yml:ro 
+      - /mnt/storage/frigate_storage/frigate:/media/frigate
+      - /home/callisto_user/frigate:/db
+    tmpfs:
+      - /tmp/cache:size=1000000000
+    ports:
+      - "5000:5000"
+      - "1935:1935"
+    environment:
+      FRIGATE_RTSP_PASSWORD: "xxxxx-xxxxxxxx-xxxxx"
