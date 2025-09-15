@@ -1,2 +1,1 @@
-# platform-k3s
-GitOps homelab cluster (k3s/Argo CD/MetalLB/ingress/NFS or Longhorn).
+Home lab configs and tools, specifically for those things surrounding Frigate camera software and its integrations, notifications, and configuration files.
